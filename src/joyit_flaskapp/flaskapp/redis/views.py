@@ -1,3 +1,5 @@
+from typing import List, Tuple
+
 from flask import request, current_app
 from . import bp
 from .. import redis_client
@@ -27,3 +29,13 @@ def set():
     if ret:
         return "done"
     return "error"
+
+
+@bp.route("/list")
+def list():
+    cursor_new, keys = redis_client.scan()  # type: int, List[str]
+    buf = ""
+    for key in keys:
+        val = redis_client.get(key)
+        buf += f"{key.decode()}: {val.decode()}<br>"
+    return buf
