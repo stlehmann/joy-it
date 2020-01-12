@@ -1,5 +1,5 @@
 class Config:
-    REDIS_URL = "redis://:password@localhost:6379/0"
+    MQTT_BROKER_URL = 'rpi2-joyit'
 
 
 class DevelopmentConfig(Config):
