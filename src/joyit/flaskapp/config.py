@@ -1,10 +1,9 @@
 class Config:
-    MQTT_BROKER_URL = 'rpi2-joyit'
+    MQTT_BROKER_URL = "rpi2-joyit.local"
 
 
 class DevelopmentConfig(Config):
     TEMPLATES_AUTO_RELOAD = True
-    REDIS_URL = "redis://@rpi2-joyit"
 
 
 class ProductionConfig(Config):
