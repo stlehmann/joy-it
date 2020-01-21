@@ -1,10 +1,13 @@
-import redis
+import json
+
+from paho.mqtt.client import Client
 import Adafruit_PCA9685
 import time
 
 
 pwm = Adafruit_PCA9685.PCA9685(address=0x41)
-redis_client = redis.Redis("localhost")
+mqtt_client = Client()
+mqtt_client.connect("localhost")
 
 
 # set min/max pulse width
@@ -39,10 +42,19 @@ def set_servo_pulse(channel, pulse):
 
 pwm.set_pwm_freq(50)
 
+
+def on_command_move(client, userdata, message):
+    payload = message.payload
+    data = json.loads(payload.decode())
+    print(data)
+    set_servo_pulse(0, scale(data["params"][0]))
+
+
+mqtt_client.subscribe("joyit/command/#")
+mqtt_client.message_callback_add("joyit/command/#", on_command_move)
+
+
 # set pwm frequency
 while True:
-    for ch, key in enumerate(keys):
-        val = int(redis_client.get(key) or b"0")
-        set_servo_pulse(ch, scale(val))
+    mqtt_client.loop(1.0)
 
-    time.sleep(0.1)
