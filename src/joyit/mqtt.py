@@ -1,13 +1,25 @@
-from typing import NamedTuple
+from typing import NamedTuple, Tuple
+
+import json
+from paho.mqtt.client import Client
+
+
+def join_topics(*topics: str) -> str:
+    """Join two topics."""
+    if not topics:
+        raise ValueError("Need to pass at least one topic")
+    return "/".join(topics)
 
 
 class MoveAxisParams(NamedTuple):
+    """Parameters for moving a single axis."""
     axis: int
     position: int
     velocity: int
 
 
 class MoveParams(NamedTuple):
+    """Parameters for moving all axes."""
     ax0: int
     ax1: int
     ax2: int

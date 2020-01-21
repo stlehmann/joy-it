@@ -1,6 +1,9 @@
-from . import bp
-from flask import render_template, request
 from dataclasses import dataclass
+
+from flask import render_template, request
+
+from . import bp
+from .. import mqtt_wrapper
 
 
 @dataclass()
@@ -14,12 +17,9 @@ axes_dict = {f"ax{i}": Axis(name=f"ax{i}", label=f"Achse {i + 1}") for i in rang
 
 
 @bp.route('/', methods=["GET", "POST"])
-def index():
-    return render_template("main/index.html", axes=axes_dict.values())
-
-
-@bp.route("/test", methods=["GET", "POST"])
-def test():
+def index() -> str:
     if request.method == "POST":
-        print(request.form)
-    return render_template("main/test.html")
+        axes_vals = map(int, (request.form[key] for key in axes_dict.keys()))
+        mqtt_wrapper.move(*axes_vals, 10)
+
+    return render_template("main/index.html", axes=axes_dict.values())
