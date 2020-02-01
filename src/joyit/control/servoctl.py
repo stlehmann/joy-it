@@ -1,13 +1,10 @@
-import json
-
-from paho.mqtt.client import Client
+import redis
 import Adafruit_PCA9685
 import time
 
 
 pwm = Adafruit_PCA9685.PCA9685(address=0x41)
-mqtt_client = Client()
-mqtt_client.connect("localhost")
+redis_client = redis.Redis("localhost")
 
 
 # set min/max pulse width
@@ -23,13 +20,13 @@ servo_scale_y1 = 2.5
 keys = ["ax0", "ax1", "ax2", "ax3", "ax4", "ax5"]
 
 
-def scale(x):
+def scale(x: int) -> float:
     m = (servo_scale_y1 - servo_scale_y0) / (servo_scale_x1 - servo_scale_x0)
     n = servo_scale_y0
     return m * x + n
 
 
-def set_servo_pulse(channel, pulse):
+def set_servo_pulse(channel: int, pulse: int) -> None:
     pulse_length = 1000000
     pulse_length /= 50
     pulse_length /= 4096
@@ -42,19 +39,11 @@ def set_servo_pulse(channel, pulse):
 
 pwm.set_pwm_freq(50)
 
-
-def on_command_move(client, userdata, message):
-    payload = message.payload
-    data = json.loads(payload.decode())
-    print(data)
-    set_servo_pulse(0, scale(data["params"][0]))
-
-
-mqtt_client.subscribe("joyit/command/#")
-mqtt_client.message_callback_add("joyit/command/#", on_command_move)
-
-
 # set pwm frequency
 while True:
-    mqtt_client.loop(1.0)
+    for ch, key in enumerate(keys):
+        val = int(redis_client.get(key) or b"0")
+        if val > 0:
+            set_servo_pulse(ch, scale(val))
 
+    time.sleep(0.001)
