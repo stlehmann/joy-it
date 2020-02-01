@@ -1,7 +1,7 @@
 name: joy-it
 channels:
-  - pytorch
   - conda-forge
+  - pytorch
   - defaults
 dependencies:
   - attrs=19.3.0=py_0
@@ -9,6 +9,7 @@ dependencies:
   - certifi=2019.11.28=py37_0
   - click=7.0=py_0
   - flask=1.1.1=py_1
+  - flask-socketio=3.3.2=py_0
   - importlib_metadata=1.4.0=py37_0
   - itsdangerous=1.1.0=py_0
   - jinja2=2.10.3=py_0
@@ -16,11 +17,14 @@ dependencies:
   - libffi=3.2.1=h6de7cb9_1006
   - markupsafe=1.1.1=py37h0b31af3_0
   - more-itertools=8.0.2=py_0
+  - mypy=0.761=py_0
+  - mypy_extensions=0.4.3=py37_0
   - ncurses=6.1=h0a44026_1002
   - openssl=1.1.1d=h0b31af3_0
   - packaging=20.0=py_0
   - pip=19.3.1=py37_0
   - pluggy=0.12.0=py_0
+  - psutil=5.6.7=py37h0b31af3_0
   - py=1.8.1=py_0
   - pyparsing=2.4.6=py_0
   - pytest=5.3.2=py37_0
@@ -30,6 +34,8 @@ dependencies:
   - six=1.13.0=py37_0
   - sqlite=3.30.1=h93121df_0
   - tk=8.6.10=hbbe82c9_0
+  - typed-ast=1.4.1=py37h0b31af3_0
+  - typing_extensions=3.7.4.1=py37_0
   - wcwidth=0.1.8=py_0
   - werkzeug=0.16.0=py_0
   - wheel=0.33.6=py37_0
@@ -39,6 +45,8 @@ dependencies:
   - pip:
     - flask-mqtt==1.0.5
     - paho-mqtt==1.5.0
+    - python-engineio==3.11.2
+    - python-socketio==4.4.0
     - typing==3.7.4.1
 prefix: /Users/stefan/.pyenv/versions/anaconda3-2019.07/envs/joy-it
 
