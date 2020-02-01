@@ -1,7 +1,11 @@
+import logging
 from typing import NamedTuple, Tuple
 
 import json
 from paho.mqtt.client import Client
+
+
+logger = logging.getLogger(__name__)
 
 
 def join_topics(*topics: str) -> str:
@@ -52,10 +56,17 @@ class MQTTWrapper:
             "params": params
         }
 
-        self._mqtt_client.publish(
-            join_topics(self.parent_topic, "command"),
-            json.dumps(data)
-        )
+        topic = join_topics(self.parent_topic, "command")
+        msg = json.dumps(data)
+        qos = 2
+        info = self._mqtt_client.publish(topic, msg, qos=qos)
+
+        if info.rc < qos:
+            logger.warning(f"Published to topic {topic} only with qos: {info.rc}, message: {msg}")
+        elif info.rc == qos:
+            logger.debug(f"Published to topic {topic}, message: {msg}")
+        else:
+            logger.error(f"Publishing to topic {topic} failed, message: {msg}")
 
     def move_axis(self, axis: int, position: int, velocity: int) -> None:
         params = MoveAxisParams(axis, position, velocity)

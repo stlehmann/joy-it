@@ -3,6 +3,16 @@
 {% block scripts %}
 {{ super() }}
 <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
+<script>
+  var socket = io();
+
+  function on_range_changed(obj){
+      var $obj = $(obj);
+      data = {axis: $obj.data('id'), value: parseInt(obj.value)};
+      console.log(data);
+      socket.emit('move_axis', data);
+  }
+</script>
 {% endblock %}
 
 {% block title %}
@@ -32,7 +42,7 @@
             {% set ctl_name = ax.name %}
             <label for="{{ ctl_name }}" class="col-sm-2 col-form-label">{{ ax.label }}:</label>
             <div class="col-sm-10">
-              <input type="range" class="form-control-range" id="{{ ctl_name }}"  name="{{ ctl_name }}" value={{ ax.value }}>
+              <input type="range" class="form-control-range" id="{{ ctl_name }}"  name="{{ ctl_name }}" value={{ ax.value }} data-id={{ ax.id }} onchange="on_range_changed(this)">
             </div>
           </div>
         {% endfor %}

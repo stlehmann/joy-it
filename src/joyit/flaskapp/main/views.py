@@ -8,12 +8,13 @@ from .. import mqtt_wrapper
 
 @dataclass()
 class Axis:
+    id: int
     name: str
     label: str
     value: int = 0
 
 
-axes_dict = {f"ax{i}": Axis(name=f"ax{i}", label=f"Achse {i + 1}") for i in range(6)}
+axes_dict = {f"ax{i}": Axis(id=i, name=f"ax{i}", label=f"Achse {i + 1}") for i in range(6)}
 
 
 @bp.route('/', methods=["GET", "POST"])
