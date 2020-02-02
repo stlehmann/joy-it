@@ -10,7 +10,6 @@ redis_client = redis.Redis("localhost")
 # set min/max pulse width
 servo_min = 150
 servo_max = 600
-
 servo_scale_x0 = 0
 servo_scale_x1 = 100
 servo_scale_y0 = 0.5
@@ -26,10 +25,8 @@ def scale(x: int) -> float:
     return m * x + n
 
 
-def set_servo_pulse(channel: int, pulse: int) -> None:
-    pulse_length = 1000000
-    pulse_length /= 50
-    pulse_length /= 4096
+def set_servo_pulse(channel: int, pulse: float) -> None:
+    pulse_length = 1000000 / 50 / 4096
     pulse *= 1000
     pulse /= pulse_length
     pulse = round(pulse)
@@ -37,9 +34,10 @@ def set_servo_pulse(channel: int, pulse: int) -> None:
     pwm.set_pwm(channel, 0, pulse)
 
 
+# set pwm frequency
 pwm.set_pwm_freq(50)
 
-# set pwm frequency
+
 while True:
     for ch, key in enumerate(keys):
         val = int(redis_client.get(key) or b"0")
